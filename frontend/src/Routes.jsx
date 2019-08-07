@@ -19,7 +19,7 @@ const AuthedRoutes = ({exact, component, path}) => {
 const Routes = (props) => (
 	<Switch>
 		<AuthedRoutes exact path="/" component={Home} />
-		<Route exact path="/login" component={Login} />
+		<Route exact path="/login" render={(props2) => (<Login {...props2} toggleAlert={props.toggleAlert}/>)} />
 		<Route exact path="/register" component={Register} />
 	</Switch>
 )

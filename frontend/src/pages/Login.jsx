@@ -1,25 +1,16 @@
 import React from 'react'
-import { Container, Row, Col, Label, Input, Card, CardBody, CardTitle, Button, Alert } from 'reactstrap';
+import { Container, Row, Col, Label, Input, Card, CardBody, CardTitle, Button} from 'reactstrap';
 import api from '../api'
 import {Link} from 'react-router-dom'
 
 class Login extends React.Component {
 	state = {
 		email:"",
-		password:"",
-		toastShow:false,
-		toastStatus:"success",
-		toastMessage:"placeholder"
+		password:""
 	}
 	render() {
 		return(
 			<Container fluid>
-				<Alert isOpen={this.state.toastShow} color={this.state.toastStatus} toggle={() => this.setState({toastShow:!this.state.toastShow})}>
-					<h4 className="alert-heading">Hey, listen!</h4>
-					<p>
-						{this.state.toastMessage}
-					</p>
-				</Alert>
 				<Row className="mt-5 pt-5">
 					<Col md="6" className="mx-auto">
 						<Card body>
@@ -33,19 +24,12 @@ class Login extends React.Component {
 									api.post("/authenticate/local", {email:this.state.email, password:this.state.password})
 									.then(res => {
 										if (res.data.status === "success") {
-											this.setState({
-												toastShow:true,
-												toastMessage:res.data.msg
-											}, () => {
-												localStorage.setItem("jwt", res.data.token)
-												localStorage.setItem("user", JSON.stringify(res.data.user))
-											})
+											this.props.toggleAlert(res.data.msg, res.data.status)
+											localStorage.setItem("jwt", res.data.token)
+											localStorage.setItem("user", JSON.stringify(res.data.user))
+											this.props.history.push("/")
 										} else {
-											this.setState({
-												toastShow:true,
-												toastStatus:res.data.status,
-												toastMessage:res.data.msg
-											})
+											this.props.toggleAlert(res.data.msg, res.data.status)
 										}
 									}).catch(err => {
 										console.log(err)
